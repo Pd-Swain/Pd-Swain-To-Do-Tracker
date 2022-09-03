@@ -21,11 +21,6 @@ public class UserController {
     @Autowired
     JWTSecurityToken jwtSecurityToken;
 
-    @GetMapping("/all")
-    public String home(){
-        return "Welcome To Movie Service, Please Login To See Your Movie List";
-    }
-
     @GetMapping("/admin")
     public String admin(){
         return "Welcome Admin";
