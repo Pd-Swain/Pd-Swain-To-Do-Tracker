@@ -1,0 +1,16 @@
+server:
+  port: 9191
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/capstone
+  application:
+    name: user-task-service
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8888/eureka
+  instance:
+    hostname: localhost
