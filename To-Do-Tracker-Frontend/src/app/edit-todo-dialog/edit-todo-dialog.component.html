@@ -1,0 +1,232 @@
+<div mat-dialog-content *ngIf="todo.taskId > 0">
+  <h1 class="title">Edit Todo</h1>
+    
+    <form #form="ngForm" (ngSubmit)="onEditFormSubmit(form)">
+        <!-- <div class="field">
+            <div class="control">
+                <input
+                    type="text"
+                    class="input"
+                    [ngModel]="todo.taskName"
+                    #todoTextField="ngModel"
+                    name="text"
+                    required
+                    minlength="3"
+                    placeholder="Type todo text here...">
+            </div>
+
+            <div *ngIf="todoTextField.errors && showValidationErrors">
+                <p class="help is-danger" *ngIf="todoTextField.errors['required']">Please enter the text for your Todo</p>
+                <p class="help is-danger" *ngIf="todoTextField.errors['minlength']">Todo text must be at least 3 characters</p>
+              </div>
+        </div> -->
+        <div class="form-floating mb-3">
+            <input type="text" [ngModel]="todo.taskName" #todoTextField="ngModel" name="task" class="form-control-plaintext" id="floatingEmptyPlaintextInput" required minlength="3" placeholder="e.g., Pay Bill End Of The Month">
+            <div *ngIf="todoTextField.errors && showValidationErrors">
+              <p class="help is-danger" *ngIf="todoTextField.errors['required']">Please enter the text for your Todo</p>
+              <p class="help is-danger" *ngIf="todoTextField.errors['minlength']">Todo text must be at least 3 characters</p>
+            </div>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text"[ngModel]="todo.taskDescription" name="description" class="form-control-plaintext" id="floatingPlaintextInput" placeholder="Description">
+          </div>
+          <div>
+            <mat-form-field appearance="outline" style="width: 140px; height: 10px">
+              <mat-label>Select Date</mat-label>
+              <input matInput name="start_time" #start_time="ngModel" [matDatepicker]="picker" date="true" [(ngModel)]="todo.taskDueDate" required>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="margin-left: 50px;">
+              <mat-label>Set Priority</mat-label>
+              <mat-select name="priority" #priority="ngModel" [(ngModel)]="todo.taskPriority">
+                <mat-option value="priority1">Priority 1</mat-option>
+                <mat-option value="priority2">Priority 2</mat-option>
+                <mat-option value="priority3">Priority 3</mat-option>
+                <mat-option value="priority4">Priority 4</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <!-- <p>You selected: {{selected}}</p> -->
+
+            <mat-form-field appearance="outline" style="margin-left: 50px;">
+              <mat-label>Set Label</mat-label>
+              <mat-select name="category" #category="ngModel" [(ngModel)]="todo.taskCategory">
+                <div class="form-floating mb-3" style="display: flex;">
+                  <input type="text" ngModel #labelTextField="ngModel" name="newLabel" class="form-control-plaintext" id="floatingEmptyPlaintextInput" placeholder="    Type a label">
+                  <i class="material-icons" (click)="addNewLabel(form)" matTooltip="Add Label" style="position: relative; top: 7px; cursor: pointer; color: blue; ">add</i>
+                </div>
+                <p *ngFor="let label of labels">
+                  <mat-option value="{{label}}">{{label}}</mat-option>
+                </p>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+        <br>
+
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <button type="button" class="button is-light" (click)="close()">Cancel</button>
+            </div>
+
+            <div class="control">
+                <button type="submit" class="button alt-gradient-button">
+                    <i class="material-icons">save</i>
+                    Save
+                </button>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<div mat-dialog-content *ngIf="todo.taskId < 0">
+
+  <div class="field is-grouped is-grouped-right">
+    <div style="margin-right: 420px;">
+      <h1 class="title" style="color: red;">Hello {{currentUser.username}}</h1>
+    </div>
+
+    <div class="control">
+      <i class="material-icons" (click)="close()" style="cursor: pointer; color: red;" matTooltip="Close This Window">cancel</i>
+    </div>
+  </div>
+
+  <button mat-button color="primary" (click)="onTaskNameClicked()">Search By Task Name</button><br>
+  <div *ngIf="showTaskName">
+    <mat-form-field class="example-full-width" appearance="outline" style="width: 300px;">
+      <mat-label>Search By Name</mat-label>
+      <input matInput name="text" [(ngModel)]="todoTextField" placeholder="Ex. Pay Bill">
+    </mat-form-field>
+    <button mat-raised-button style="margin-left: 21px;" (click)="search('name')">Search</button>
+  </div>
+  <!-- <div class="field is-grouped" style="margin: 0" *ngIf="showTaskName">
+    <p class="control is-expanded">
+      <input [(ngModel)]="todoTextField" required minlength="2" name="text" class="input" type="text" placeholder="Search Your Todo By Name ...">
+    </p>
+    <p class="control">
+      <button type="submit" class="button alt-gradient-button" (click)="search('name')">
+        <i class="material-icons">search</i>
+        Search
+      </button>
+    </p>
+  </div> -->
+
+  <button mat-button color="primary" (click)="onDateClicked()">Search By Date</button><br>
+  <div *ngIf="showCalender">
+    <mat-form-field appearance="outline" style="width: 300px;">
+      <mat-label>Search By Date</mat-label>
+      <input matInput [(ngModel)]="dateField" [matDatepicker]="picker" placeholder="MM/DD/YYYY">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <button mat-raised-button style="margin-left: 21px;" (click)="search('date')">Search</button>
+  </div>
+  
+  <button mat-button color="primary" (click)="onPriorityClicked()">Search By Priority</button><br>
+  <div *ngIf="showPriority">
+    <mat-form-field appearance="outline" style="width: 300px;">
+      <mat-label>Search By Priority</mat-label>
+      <mat-select name="priority" [(ngModel)]="priorityField">
+        <mat-option value="priority1">Priority 1</mat-option>
+        <mat-option value="priority2">Priority 2</mat-option>
+        <mat-option value="priority3">Priority 3</mat-option>
+        <mat-option value="priority4">Priority 4</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button style="margin-left: 21px;" (click)="search('priority')">Search</button>
+  </div>
+
+  <button mat-button color="primary" (click)="onCategoryClicked()">Search By Category</button>
+  <div *ngIf="showCategory">
+    <mat-form-field appearance="outline" style="width: 300px;">
+      <mat-label>Search By Category</mat-label>
+      <mat-select name="category" [(ngModel)]="categoryField">
+        <p *ngFor="let label of labels">
+          <mat-option value="{{label}}">{{label}}</mat-option>
+        </p>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button style="margin-left: 21px;" (click)="search('category')">Search</button>
+  </div>
+  
+</div>
+
+<div mat-dialog-content *ngIf="todo.taskId == 0">
+
+  <div class="add-todo-box">
+  
+    <form #form="ngForm" (ngSubmit)="onFormSubmit(form)">
+      <h2 class="title is-5">New Todo</h2>
+
+      <div class="field is-grouped" style="margin: 0">
+        <div class="control is-expanded">
+          <div class="control is-expanded">
+            <div class="form-floating mb-3">
+              <input type="text" ngModel #todoTextField="ngModel" name="task" class="form-control-plaintext" id="floatingEmptyPlaintextInput" required minlength="3" placeholder="e.g., Pay Bill End Of The Month">
+              <div *ngIf="todoTextField.errors && showValidationErrors">
+                <p class="help is-danger" *ngIf="todoTextField.errors['required']">Please enter the text for your Todo</p>
+                <p class="help is-danger" *ngIf="todoTextField.errors['minlength']">Todo text must be at least 3 characters</p>
+              </div>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="text" ngModel name="description" class="form-control-plaintext" id="floatingPlaintextInput" placeholder="Description">
+            </div>
+
+            <mat-form-field appearance="outline" style="width: 156px; height: 10px">
+              <!-- <mat-label>Today</mat-label> -->
+              <input placeholder="Date=>Today" matInput name="start_time" ngModel [matDatepicker]="picker">
+              <mat-hint>MM/DD/YYYY</mat-hint>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="margin-left: 42px;">
+              <mat-label>Set Priority</mat-label>
+              <mat-select name="priority" #priority="ngModel" [(ngModel)]="selected">
+                <mat-option value="priority1">Priority 1</mat-option>
+                <mat-option value="priority2">Priority 2</mat-option>
+                <mat-option value="priority3">Priority 3</mat-option>
+                <mat-option value="priority4">Priority 4</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <!-- <p>You selected: {{selected}}</p> -->
+
+            <mat-form-field appearance="outline" style="margin-left: 42px;">
+              <mat-label>Set Label</mat-label>
+              <mat-select name="category" #category="ngModel" ngModel>
+                <div class="form-floating mb-3" style="display: flex;">
+                  <input type="text" ngModel #labelTextField="ngModel" name="newLabel" class="form-control-plaintext" id="floatingEmptyPlaintextInput" placeholder="    Type a label">
+                  <i class="material-icons" (click)="addNewLabel(form)" matTooltip="Add Label" style="position: relative; top: 7px; cursor: pointer; color: blue; ">add</i>
+                </div>
+                <p *ngFor="let label of labels">
+                  <mat-option value="{{label}}">{{label}}</mat-option>
+                </p>
+              </mat-select>
+            </mat-form-field>
+
+            <br>
+
+            <div class="field is-grouped is-grouped-right">
+              <div class="control">
+                  <button type="button" class="button is-light" (click)="close()">Cancel</button>
+              </div>
+  
+              <div class="control">
+                  <button type="submit" class="button alt-gradient-button">
+                      <i class="material-icons">add</i>
+                      Add
+                  </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+  
+</div>

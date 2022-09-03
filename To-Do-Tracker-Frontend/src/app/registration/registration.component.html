@@ -1,0 +1,82 @@
+<div class="bootstrap-wrapper">
+    <div class="container mt">
+
+        <div class="row">
+            <div class="col-md-6 offset-md-3" style="text-align: center;">
+                <div class="container text-center">
+                    <img class="img-fluid" style="width: 100px;" src="/assets/register-icon-free-16.jpg" alt="">
+                </div>
+
+                <h1 class="text-center">Register Here !!!</h1>
+
+                <!-- creating a register form with ngForm, and passing those form values to ts componenet for further operation -->
+                <form
+                    *ngIf="!isSuccessful"
+                    name="form"
+                    (ngSubmit)="f.form.valid && onSubmit()"
+                    #f="ngForm"
+                    novalidate
+                >
+
+                    <!-- providing the fields for register with error message, if the fields are invalid, it will not go ahead and show the error messages for each field -->
+                    <!-- All the fields are created with angular material form -->
+                    <div>
+                        <mat-form-field class="full-width" appearance="outline">
+                            <mat-label>Username</mat-label>
+                            <input type="text" matInput [formControl]="username" required pattern="[a-zA-Z][a-zA-Z]+"/>
+                            <!-- showing error message if the fied is invalid -->
+                            <mat-error *ngIf="username.invalid">{{getUsernameErrorMessage()}}</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <mat-form-field class="full-width" appearance="outline">
+                            <mat-label>Address</mat-label>
+                            <input type="text" matInput [formControl]="address" required pattern="[a-zA-Z][a-zA-Z]+"/>
+                            <mat-error *ngIf="address.invalid">{{getAddressErrorMessage()}}</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="example-container">
+                        <mat-form-field class="full-width" appearance="outline">
+                          <mat-label>Enter your email</mat-label>
+                          <input matInput placeholder="pat@example.com" [formControl]="email" required>
+                          <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
+                        </mat-form-field>
+                      </div>
+                    <div class="example-container">
+                        <mat-form-field class="full-width" appearance="outline">
+                          <mat-label>Enter your password</mat-label>
+                          <input matInput [formControl]="password" required [type]="hide ? 'password' : 'text'">
+                          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                          </button>
+                          <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="container text-center">
+                        <button style="margin-left: 10px; width: 30%;" type="submit" mat-raised-button color="warn">Sign up for free</button>
+                    </div>
+                    <mat-error *ngIf="f.submitted && isSignUpFailed">
+                        Signup failed!: {{ errorMessage }}
+                    </mat-error>
+                </form>
+
+                <!-- providing the successful message with login button if it is successful registration, and hiding the form  -->
+                <div color="primary" *ngIf="isSuccessful">
+                    <b><i style="color: blue;">Your registration is successful! You Can Login By Using Your Email and Password Now</i></b> <br><br>
+                    <button type="submit" style="margin-left: 10px; width: 30%;" mat-raised-button color="accent" routerLink="/login">Login</button>
+                  </div>
+                <div>
+                    <br><hr width="70%" color="grey"><br>
+                    <!-- providing terms and condition -->
+                    <p>By clicking "Sign up for free", you agree to our <a href="https://flycricket.io/todo-list/terms.html" target="_blank">Terms of Use</a></p>
+                    <p>----------------------------------------OR----------------------------------------</p>
+                    <!-- if user is already a registered user, he can directly login here  -->
+                    <p>Already a Member? <a href="" routerLink="/login">Login Here</a></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

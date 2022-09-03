@@ -1,0 +1,82 @@
+<!-- creating a navbar and sidebar with angular material navbar -->
+<mat-toolbar color="primary">
+  <button
+    type="button"
+    aria-label="Toggle sidenav"
+    mat-icon-button
+    (click)="drawer.toggle()">
+    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+  </button>
+  <span>My ToDo</span>
+
+  <!-- if user is not logged in, all the functionality we are hiding -->
+  <mat-form-field style="width: 300px; margin: 50px auto; display: block;" *ngIf="isLoggedIn">
+    <input type="text" matInput placeholder="Search Task" [(ngModel)]="enteredSearchvalue"/>
+    <button mat-button (click)="search()"><mat-icon matTooltip="Search">search</mat-icon></button>
+    <button mat-button *ngIf="!enteredSearchvalue">
+      <mat-icon matTooltip="Audio Search">mic</mat-icon>
+    </button>
+    <button type="button" mat-button (click)="reset()" *ngIf="enteredSearchvalue"><mat-icon matTooltip="Cancel">cancel</mat-icon></button>
+  </mat-form-field>
+  <div *ngIf="isLoggedIn">
+    <button mat-button>
+      <!-- open this menu bar when user clicked on notification and in this menu we are showing the user that how many pending task he has -->
+      <mat-menu #notifications="matMenu" xPosition="after" yPosition="above">
+        <div class="container">
+          <h2 *ngIf="notification>=1" style="color:deeppink">{{notification}} Tasks are crossing its due date, Complete It ASAP or You can <a routerLink="archive">Click Here</a> to check those Tasks..</h2>
+          <h2 *ngIf="notification==0">No New Notifications</h2>
+        </div>
+      </mat-menu>
+
+      <mat-icon [matMenuTriggerFor]="notifications" matTooltip="Notifications" matTooltip="Notifications" matBadge="{{notification}}" matBadgeColor="warn">notifications</mat-icon>
+
+      <!-- this menu is open up, when user clicked on profile  -->
+      <mat-menu #menu="matMenu" xPosition="after" yPosition="above">
+        <button mat-menu-item><mat-icon>face</mat-icon>{{user.username}}</button>
+        <button mat-menu-item><mat-icon>alternate_email</mat-icon>{{user.email}}</button>
+        <button mat-menu-item>
+          <mat-icon>settings</mat-icon>Settings
+        </button>
+        <button mat-menu-item><mat-icon>help</mat-icon>Help</button>
+        <button mat-menu-item disabled=""><mat-icon>feedback</mat-icon>Send Feedback</button>
+        <button mat-menu-item (click)="logout()"><mat-icon>power_settings_new</mat-icon>Log Out</button>
+      </mat-menu>
+    </button>
+    <!-- he can add tasks from any of pages by clicking on add icon  -->
+    <button mat-button (click)="onAddClicked()"><mat-icon matTooltip="Add Task">add</mat-icon></button>
+    <button mat-button><mat-icon matTooltip="Open Help & Information">help</mat-icon></button>
+    <button mat-button [matMenuTriggerFor]="menu">Hii {{user.username}}<mat-icon matTooltip="Manage Profile" style="margin-left: 7px;">person</mat-icon></button>
+  </div>
+
+  <!-- if user is not logged in, we will show only this sign up and login option -->
+  <div style="margin-left: 1200px;" *ngIf="!isLoggedIn">
+    <button mat-button routerLink="/register">Sign Up</button>
+    <button mat-button routerLink="/login">Login</button>
+  </div>
+
+</mat-toolbar>
+<!-- sidenav container -->
+<mat-sidenav-container class="sidenav-container" style="height: 680px;">
+  <mat-sidenav #drawer class="sidenav" mode="side" [opened]="(isHandset$ | async) === false"><br>
+    <div *ngIf="isLoggedIn">
+      <button mat-button routerLink="today"><mat-icon style="font-size: 20px">home</mat-icon>Home</button><br><br>
+      <button mat-button routerLink="today"><mat-icon style="font-size: 20px">today</mat-icon>Today</button><br><br>
+      <button mat-button routerLink="upcoming"><mat-icon style="font-size: 20px">event</mat-icon>Upcoming</button><br><br>
+      <button mat-button (click)="onFilterClicked()"><mat-icon style="font-size: 20px">filter</mat-icon>Filter</button><br><br>
+      <button mat-button routerLink="archive"><mat-icon style="font-size: 20px">restore_from_trash</mat-icon>Archive</button>
+      <hr>
+      <button mat-stroked-button color="primary" style="width: 100px; margin: auto; display: block;" (click)="logout()">SIGN OUT</button>
+    </div>
+    <div *ngIf="!isLoggedIn">
+      <p style="text-align: center;">Sign in to add tasks, and<br>Organize your life.</p>
+      <button mat-stroked-button color="primary" style="width: 100px; margin: auto; display: block;" routerLink="/login">SIGN IN</button>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <!-- Add Content Here -->
+    <!-- routing through its own children -->
+    <div *ngIf="isLoggedIn">
+      <router-outlet></router-outlet>                      
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

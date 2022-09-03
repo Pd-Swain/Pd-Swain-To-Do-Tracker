@@ -1,0 +1,51 @@
+<div class="bootstrap-wrapper">
+    <div class="container mt">
+
+        <div class="row">
+            <div class="col-md-6 offset-md-3" style="text-align: center;">
+                <div class="container text-center">
+                    <img class="img-fluid" style="width: 100px;" src="/assets/lock-4573711_1280.webp" alt="">
+                </div>
+
+                <h1 class="text-center">Login Here !!!</h1>
+                <!-- creating a login form with ngForm with validation so after submitting the form, we can check if user is registerd with us or not -->
+                <form
+                    name="form"
+                    (ngSubmit)="onSubmit()"
+                    #f="ngForm"
+                    novalidate
+                >
+                  <!-- all field are created with angular maerial form -->
+                  <div class="example-container">
+                    <mat-form-field class="full-width" appearance="outline">
+                      <mat-label>Enter your email</mat-label>
+                      <input matInput placeholder="pat@example.com" [formControl]="email" required>
+                      <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="example-container">
+                    <mat-form-field class="full-width" appearance="outline">
+                      <mat-label>Enter your password</mat-label>
+                      <input matInput [formControl]="password" required [type]="hide ? 'password' : 'text'">
+                      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                      </button>
+                      <mat-error *ngIf="password.invalid">{{getErrorMessage()}}</mat-error>
+                    </mat-form-field>
+                  </div>
+                  <button type="submit" style="margin-left: 10px; width: 30%;" mat-raised-button color="accent">Login</button>
+                  <p><br>-------------------------------------------------------------------------OR-------------------------------------------------------------------------</p>
+                  <!-- providing the registration page for the new user -->
+                  <p>Not a member yet? <a href="" routerLink="/register">Sign up for free</a></p>
+                <div class="form-group">
+                  <mat-error *ngIf="isLoginFailed">
+                    Login failed: {{ errorMessage }}
+                  </mat-error>
+                </div>
+              </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>

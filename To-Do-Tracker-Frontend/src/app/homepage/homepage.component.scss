@@ -1,0 +1,29 @@
+.sidenav-container {
+  height: 100%;
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+a{
+  color: darkolivegreen;
+  font-weight: 900;
+  font-family: 'Courier New', Courier, monospace;
+  text-decoration:none
+}
+
+a:hover{
+  color: blue;
+  font-family: cursive;
+}

@@ -1,0 +1,131 @@
+<div class="mybox">
+  <section class="heading-section">
+    <h1 class="title is-1 has-text-centered">Archive</h1>
+    <h2 class="is-1 has-text-centered">These tasks are <span style="color: green; font-family: cursive;">Completed</span> or going <span style="color: red; font-family: cursive;">Overdue</span> ... Please Clear ASAP...</h2>
+    <h2 class="is-1 has-text-centered">Or if by mistakenly the task is <span style="color: green; font-family: cursive;">Completed</span>, you can move again to main section by checking the tick mark...</h2>
+  </section>
+  <div>
+  <mat-accordion>
+   <mat-expansion-panel (opened)="panelOpenState = true"
+                        (closed)="panelOpenState = false">
+     <mat-expansion-panel-header>
+       <mat-panel-title style="font-weight: 500; text-align: center;">
+         Sort By
+       </mat-panel-title>
+     </mat-expansion-panel-header>
+     <form #f="ngForm" (ngSubmit)="onSorting(f)">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Select</mat-label>
+          <!-- name="sort category" -->
+          <mat-select #sortcat="ngModel" name="sortcat" [(ngModel)]="name">
+            <mat-option value="name">Name</mat-option>
+            <mat-option value="date">Date</mat-option>
+            <mat-option value="priority">Priority</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="margin-left: 50px;">
+          <mat-label>Select</mat-label>
+          <!-- name="sort type" -->
+          <mat-select #sorttyp="ngModel" name="sorttyp" [(ngModel)]="ascending">
+            <mat-option value="asc">Ascending</mat-option>
+            <mat-option value="desc">Descending</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button style="margin-left: 25px;"><i class="material-icons">search</i></button>
+
+        <mat-button-toggle-group (click)="showSection(f)" ngModel appearance="legacy" name="fontStyle" aria-label="Font Style" style="margin-left: 400px;">
+          <mat-button-toggle value="overdue" style="color: red; font-family: cursive; border-right: 3px solid red;">Overdue</mat-button-toggle>
+          <mat-button-toggle value="completed" style="color: green; font-family: cursive; border-right: 3px solid green" >Completed</mat-button-toggle>
+          <mat-button-toggle value="both" style="color: black; font-family: cursive;">Both</mat-button-toggle>
+        </mat-button-toggle-group>
+      
+     </form>
+   </mat-expansion-panel>
+  </mat-accordion>
+  </div>
+</div>
+
+<section class="section" *ngIf="openPending">
+    <div style="color: red; background-color: #f2f3f5; border-radius: 12px; width: 100%; font-family: cursive; position: sticky; z-index: 1; top: 210px;">
+      <h2 style="padding-left: 65px; padding-top: 27px;">Overdue</h2><hr>
+    </div>
+    <div class="container" *ngFor = " let todo of todos ">
+
+      <!-- <div class="container text-center" *ngIf="pendingTask && !overdueTasks(todo.taskDueDate)">
+        <img class="img-fluid" style="width: 100px;" src="\assets\yaaaay-molang.gif" alt="">
+        <h2 style="font-family: cursive; color: burlywood; text-shadow: 1px 1px gray;">No Overdue Tasks</h2>
+      </div> -->
+  
+      <div class="todos-list" *ngIf="!todo.taskStatus && overdueTasks(todo.taskDueDate)">
+        <div class="todo-item"  [class.completed]="todo.taskStatus">
+            <div class="check-box" (click)="onCheckClicked(todo)">
+                <i class="material-icons" matTooltip="Task Completed?">check</i>
+            </div>
+
+            <div class="todo-text">
+                <p>{{todo.taskName}}</p>
+                <p style="font-size: 15px;">{{dateFormat(todo.taskDueDate)}}</p>
+            </div>
+
+            <div class="todo-controls-box">
+              <div class="todo-control-button" (click)="onEditClicked(todo)">
+                  <i class="material-icons" matTooltip="Edit Task">edit</i>
+              </div>
+
+              <div class="todo-control-button">
+                <mat-icon *ngIf="todo.taskPriority=='priority1'" style="color: red;" matTooltip="Priority 1">flag</mat-icon>
+                <mat-icon *ngIf="todo.taskPriority=='priority2'" style="color: darkorange;" matTooltip="Priority 2">flag</mat-icon>
+                <mat-icon *ngIf="todo.taskPriority=='priority3'" style="color: dodgerblue;" matTooltip="Priority 3">flag</mat-icon>
+                <mat-icon *ngIf="todo.taskPriority=='priority4'" style="color: grey;" matTooltip="Priority 4">flag</mat-icon>
+              </div>
+  
+              <div class="todo-control-button is-danger" (click)="onDeleteClicked(todo.taskId)">
+                  <i class="material-icons" matTooltip="Delete Task">delete</i>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+</section>
+
+<section class="section" *ngIf="openCompleted">
+  <div style="color: green; background-color: #f2f3f5; border-radius: 15px; width: 100%; font-family: cursive; position: sticky; z-index: 1; top: 210px;">
+    <h2 style="padding-left: 65px; padding-top: 27px;">Completed</h2><hr>
+  </div>
+  <!-- <h2 style="color: green; margin-left: 60px; font-family: cursive;">Completed</h2><hr> -->
+  <div class="container" *ngFor = "let todo of todos ">
+
+    <div class="todos-list" *ngIf="todo.taskStatus">
+      <div class="todo-item"  [class.completed]="todo.taskStatus">
+          <div class="check-box" (click)="onCheckClicked(todo)">
+              <i class="material-icons" matTooltip="Task Completed?">check</i>
+          </div>
+
+          <div class="todo-text">
+              <p>{{todo.taskName}}</p>
+              <p style="font-size: 15px;">{{dateFormat(todo.taskDueDate)}}</p>
+          </div>
+
+          <div class="todo-controls-box">
+            <div class="todo-control-button" (click)="onEditClicked(todo)" *ngIf="!todo.taskStatus">
+                <i class="material-icons" matTooltip="Edit Task">edit</i>
+            </div>
+
+            <div class="todo-control-button"  *ngIf="!todo.taskStatus">
+              <mat-icon *ngIf="todo.taskPriority=='priority1'" style="color: red;" matTooltip="Priority 1">flag</mat-icon>
+              <mat-icon *ngIf="todo.taskPriority=='priority2'" style="color: darkorange;" matTooltip="Priority 2">flag</mat-icon>
+              <mat-icon *ngIf="todo.taskPriority=='priority3'" style="color: dodgerblue;" matTooltip="Priority 3">flag</mat-icon>
+              <mat-icon *ngIf="todo.taskPriority=='priority4'" style="color: grey;" matTooltip="Priority 4">flag</mat-icon>
+            </div>
+
+            <div class="todo-control-button is-danger" (click)="onDeleteClicked(todo.taskId)">
+                <i class="material-icons" matTooltip="Delete Task">delete</i>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</section>
